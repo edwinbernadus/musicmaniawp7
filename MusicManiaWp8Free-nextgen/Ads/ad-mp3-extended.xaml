@@ -1,0 +1,19 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      Width="480"
+      Height="80"
+      Background="{StaticResource PhoneBackgroundBrush}">
+    <Border BorderBrush="Transparent"
+            BorderThickness="0">
+        <Grid>
+            <!--<TextBlock Text="WP Unified Ad"
+                       Foreground="{StaticResource PhoneAccentBrush}" Margin="0"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="35"/>-->
+            <Image Source="http://az623171.vo.msecnd.net/first/video.png"> </Image>
+            <HyperlinkButton NavigateUri="http://www.windowsphone.com/s?appid=4701d4da-7060-4afe-b1b6-53479227f418"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch">
+                
+            </HyperlinkButton>
+        </Grid>
+    </Border>
+</Grid>

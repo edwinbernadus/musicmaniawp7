@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="PhoneApp18.AdExtender"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ads="clr-namespace:MC.Phone.Ads;assembly=MC.Phone.Ads"
+    xmlns:provider="clr-namespace:MC.Phone.Ads.Provider;assembly=MC.Phone.Ads"
+    xmlns:adDuplex="clr-namespace:MC.Phone.Ads.AdDuplex;assembly=MC.Phone.Ads.AdDuplex"
+    xmlns:strategy="clr-namespace:MC.Phone.Ads.Strategy;assembly=MC.Phone.Ads"
+
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="480" d:DesignWidth="480">
+    
+    <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
+        <ads:AdControl x:Name="AdWithLocalXmlAndRemoteXml"
+                IsTest="False">
+            <ads:AdControl.AdProviders>
+                <provider:GenericAdProviderForXaml XamlUri="http://greenstorage.blob.core.windows.net/director/ad-mp3-extended.xaml"/>
+                <!--<provider:GenericAdProviderForXaml XamlUri="http://az623171.vo.msecnd.net/extended/ad-mp3-extended.xaml"/>-->
+                
+                <provider:NoneAdProvider />
+                <adDuplex:AdDuplexAdProvider App="42259" />
+                <!--the configuration of all the adproviders-->
+            </ads:AdControl.AdProviders>
+            <ads:AdControl.AdProviderStrategy>
+                <strategy:RemoteAdProviderStrategy LocalProviderSettingsUri="Ads/settings.xml"
+                RemoteProviderSettingsUri="http://greenstorage.blob.core.windows.net/director/ad-mp3-settings.xml"/>
+            </ads:AdControl.AdProviderStrategy>
+        </ads:AdControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,126 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="MusicManiaWp7.DatabaseResultPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:adDuplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        
+        <Grid.Background>
+            <ImageBrush ImageSource="b3.jpg" />
+        </Grid.Background>
+        <Grid.Resources>
+            <DataTemplate x:Key="ListTemplate">
+                
+                <!--<StackPanel Margin="0,0,0,17">-->
+                <StackPanel Margin="-12,12,0,17">
+                    <!--<TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>-->
+                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}" 
+                                   FontSize="24"
+                                   Foreground="{StaticResource PhoneForegroundBrush}"/>
+                </StackPanel>
+
+                <!--<Grid Margin="0,6">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="{Binding Thumb100Uri}" Height="100">
+                   
+                   
+                    </Image>
+                    <Image Grid.Column="0" Source="{Binding ImageUrl}" Height="100"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="25" Margin="12,0">
+                    
+                    
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Text="{Binding name}" FontSize="25" Margin="12,0"/>
+                </Grid>-->
+            </DataTemplate>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80" />
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <Grid Grid.Row="0" Margin="12,0">
+            <TextBlock Text="" Style="{StaticResource PhoneTextNormalStyle}" Name="TitleTextBlock"/>
+            <TextBlock Text="{Binding CurrentProgress,Mode=TwoWay}" Foreground="{StaticResource PhoneAccentBrush}"
+                       Visibility="{Binding CurrentProgressEnable,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                       Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Right"/>
+        </Grid>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <phone:Pivot HeaderTemplate="{StaticResource PivotTitle}">
+                <phone:PivotItem Header="mixradio">
+                    <ListBox x:Name="MixRadioList"
+                             
+                             ItemTemplate="{StaticResource ListTemplate}"
+                             ItemsSource="{Binding ResultMixRadio,Mode=TwoWay}"
+                             SelectedItem="{Binding SelectedItemMixRadio,Mode=TwoWay}"
+                             >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding MixRadioTapCommand}"
+                                CommandParameter="" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListBox>
+                    
+                </phone:PivotItem>
+                
+                <phone:PivotItem Header="echonest">
+                    <ListBox x:Name="EchoNestList" 
+                             ItemTemplate="{StaticResource ListTemplate}"
+                             ItemsSource="{Binding ResultEchoNest,Mode=TwoWay}"
+                             SelectedItem="{Binding SelectedItemEchoNest,Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding EchoNestTapCommand}"
+                                CommandParameter="" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListBox>
+                </phone:PivotItem>
+                <phone:PivotItem Header="xbox music">
+                    <ListBox x:Name="XboxMusicList" 
+                             ItemTemplate="{StaticResource ListTemplate}" 
+                             ItemsSource="{Binding ResultXboxMusic,Mode=TwoWay}"
+                             SelectedItem="{Binding SelectedItemXboxMusic,Mode=TwoWay}"
+                             >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding XboxMusicTapCommand}"
+                                CommandParameter="" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListBox>
+                </phone:PivotItem>
+            </phone:Pivot>
+            
+        </Grid>
+        <adDuplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Collapsed" 
+                                AppId="{StaticResource AdDuplexId}" Grid.Row="2"/>
+        <ProgressBar Width="400" HorizontalAlignment="Left" VerticalAlignment="Top" Height="4" Grid.Row="0"
+                     Margin="24,0,0,0"
+                     Visibility="{Binding MainProgressBarVisibility,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                     IsIndeterminate="{Binding MainProgressBarProgress,Mode=TwoWay}" />
+    </Grid>
+
+</phone:PhoneApplicationPage>

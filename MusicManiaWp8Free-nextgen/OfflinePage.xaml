@@ -1,0 +1,160 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="MusicManiaWp7.OfflinePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:Controls="clr-namespace:WP7Contrib.View.Controls;assembly=WP7Contrib.View.Controls"
+    xmlns:adduplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone" mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="Saved Songs" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <!--<TextBlock Text="Streaming" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>-->
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0" HorizontalAlignment="Left" Name="PlayStack"
+                    Visibility="Visible">
+                <Border BorderBrush="White" BorderThickness="0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="Visible">
+                            <!--<Button Width="80" Height="80" Content="" Name="HideImage" BorderBrush="Transparent"
+                            Tap="hideButton_Click">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/minus.png" />
+                                </Button.Background>
+                            </Button>-->
+                            <Button Width="80" Height="80" Content="" Name="PrevButton" BorderBrush="Transparent"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/rew.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="PlayButton"
+                            Visibility="{Binding PlayImage,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/play.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="PauseButton"
+                            Visibility="{Binding PauseImage,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/pause.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="NextButton"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/ff.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="NowPlayingButton" Tap="NowPlayingButton_Tap" 
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/overflowdots.png" />
+                                </Button.Background>
+                            </Button>
+
+                        </StackPanel>
+
+
+                        <!--<ProgressBar Width="300"  Value="50" Maximum="100" Background="White"  Margin="0,5,0,10" Height="3" 
+                                 Style="{StaticResource ProgressBarStyle1}" ></ProgressBar>-->
+                        <Slider Width="420"  Value="50" Maximum="100" Background="White"  Margin="0,-5,0,-10" Name="MainSlider" 
+                                Visibility="Collapsed" >
+                        </Slider>
+
+                        <ProgressBar Width="320"  Value="50" Maximum="100" 
+                                 Margin="0,-5,0,-10" Name="BackgroundLoadProgressBar" Visibility="Collapsed" IsIndeterminate="False" >
+                        </ProgressBar>
+
+                        <!--<Controls1:SuperSlider Width="300"  Value="50" Maximum="100" Background="White"  Margin="0,15,0,-5" Height="10">
+                            </Controls1:SuperSlider>-->
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+            
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <TextBlock Width="500" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,0,0,0"  
+                       Foreground="{StaticResource PhoneAccentBrush}" 
+                       Name="SavedInfoTextBlock"
+                       Visibility="{Binding InfoTextVisibility,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                                   Text="This is download result location"></TextBlock>
+            <ProgressBar Name="MainProgressBar" Width="400" Margin="0,0,0,0" Visibility="Collapsed" IsIndeterminate="False"></ProgressBar>
+            <ListBox Margin="0,0,0,20" ItemsSource="{Binding Items}" Name="ListBoxSaved" 
+                                 Controls:TiltEffect.IsTiltEnabled="True" >
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="-1,0,0,0" Name="MainSavedStackPanel">
+
+                            <StackPanel Width="100" Name="FirstSavedStackPanel">
+                                <Border Background="{Binding BackgroundColorDefinition,Mode=TwoWay}" Width="60"
+                                                    Height="60" Margin="-14,5,0,0">
+                                    <Button Width="100" Height="100" Content="" BorderBrush="Transparent"
+                                                        Margin="-18,-19,0,0" Tag="{Binding DownloadFileNameWithPath}" Tap="PlayButtonTap"  >
+                                        <Button.Background>
+                                            <ImageBrush ImageSource="Image\no_circle\play.png" />
+                                        </Button.Background>
+                                    </Button>
+                                </Border>
+
+                            </StackPanel>
+
+
+                            <StackPanel Width="260" Margin="-20,0,0,0" Name="SecondSavedStackPanel" 
+                                                    Tag="{Binding DownloadFileNameWithPath}" Tap="SecondSavedStackPanel_Tap">
+
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu Name="SavedContextMenu" Background="White">
+                                        <toolkit:MenuItem Header="Play" Foreground="Black"  Background="White" Name="PlayDirectMenu" Tap="PlayDirectMenu_Tap" Tag="{Binding DownloadFileNameWithPath,Mode=TwoWay}"/>
+                                        <toolkit:MenuItem Header="Play from launcher" Foreground="Black"  Background="White" Name="PlayMenu" Tap="PlayMenu_Tap" Tag="{Binding DisplayFileUrl,Mode=TwoWay}"/>
+                                        <toolkit:MenuItem Header="Copy to music hub"  Name="CopyMenu" Foreground="Black"  Background="White"  IsEnabled="{Binding IsEnableToCopy,Mode=TwoWay}" Tap="CopyMenu_Tap" Tag="{Binding DisplayFileUrl,Mode=TwoWay}"/>
+                                        <toolkit:MenuItem Header="Delete"    Name="DeleteMenu" Command="{Binding DeleteCommand}" Foreground="Black"  Background="White"/>
+
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+
+                                <TextBlock Text="{Binding SearchSongName}" TextWrapping="Wrap"
+                                                       Style="{StaticResource PhoneTextNormalStyle}" Foreground="{StaticResource PhoneAccentBrush}" />
+                                <TextBlock Text="{Binding SongName}" TextWrapping="Wrap"
+                                                       Style="{StaticResource PhoneTextNormalStyle}" />
+                                <TextBlock Text="{Binding Artist}" TextWrapping="Wrap"
+                                                       Style="{StaticResource PhoneTextNormalStyle}" />
+                                <TextBlock Text="{Binding FileSize}" TextWrapping="Wrap"
+                                                       Style="{StaticResource PhoneTextNormalStyle}" />
+                            </StackPanel>
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+   
+        <adduplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Collapsed" 
+                                AppId="{StaticResource AdDuplexId}" Grid.Row="2"/>
+    </Grid>
+
+</phone:PhoneApplicationPage>

@@ -1,0 +1,4 @@
+namespace MusicManiaWp7
+{
+    
+}

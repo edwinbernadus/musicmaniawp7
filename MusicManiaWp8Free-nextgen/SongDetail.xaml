@@ -1,0 +1,122 @@
+﻿<phone:PhoneApplicationPage x:Class="MusicManiaWp7.SongDetail"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:adduplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}" FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}" SupportedOrientations="Portrait" Orientation="Portrait"
+                            mc:Ignorable="d" shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is  placed-->
+    <Grid x:Name="LayoutRoot">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <!--<TextBlock Text="{StaticResource AppName}" Style="{StaticResource PhoneTextNormalStyle}" Foreground="{StaticResource PhoneAccentBrush}"/>-->
+            <!--<TextBlock Text="Detail Song" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>-->
+        </StackPanel>
+        <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
+
+            
+                <StackPanel>
+                <TextBlock Text="Details" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,20,0,0"/>
+                <ListBox x:Name="FirstListBox" Margin="0,20,-12,0" 
+                         ItemsSource="{Binding Items}"  Height="394" 
+                         >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,17" Width="432" Height="78">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding LineOne}" TextWrapping="Wrap"
+                                                   Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <Border Background="Transparent" Margin="16,4,0,0"  >
+                                        <Image Source="Image/search.png" Height="40"  Name="SearchImage" Tap="SearchImage_Tap"
+                                     Visibility="{Binding VisibilityImage,Mode=TwoWay,
+                                     Converter={StaticResource VisibilityConverter}}" 
+                                     Tag="{Binding LineTwo}"></Image>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="{Binding LineTwo}" TextWrapping="Wrap" Margin="12,-6,12,0"
+                                               Style="{StaticResource PhoneTextSubtleStyle}" Foreground="{StaticResource PhoneAccentBrush}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <ProgressBar Name="SecondInquiryProgressBar" Width="400"  HorizontalAlignment="Left" Margin="0,20,0,0" Visibility="Collapsed"></ProgressBar>
+                    
+                <StackPanel Name="DownloadPanel" Margin="5,0,0,0">
+                    <Rectangle HorizontalAlignment="Left" Stroke="{StaticResource SecondAccentColor}"
+                                           StrokeThickness="2" Height="2" Width="380" Margin="10,10,0,20" />
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Border Margin="10,0,0,0" Width="180" Height="60"  BorderBrush="White" BorderThickness="1" Tap="PlayClick">
+                            <Button Width="80" Height="80" Content="" 
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"  BorderBrush="Transparent"
+                                                >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/no_circle/play.png"/>
+                                </Button.Background>
+
+                            </Button>
+                        </Border>
+                        <Border Margin="20,0,0,0" Width="180" Height="60"  BorderBrush="White" BorderThickness="1" Tap="DownloadClick">
+                            <Button Width="80" Height="80" Content="" Name="DownloadButton"
+                                                BorderBrush="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/no_circle/download.png"/>
+                                </Button.Background>
+                            </Button>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="80" Margin="0,10,0,0">
+                        <Button Name="StreamingButton"  HorizontalAlignment="Left"  Width="200" Content="Streaming" Height="80" Click="StreamingButton_Click" Margin="0,0,0,0"></Button>
+                        <Button Name="RingtoneButton"  HorizontalAlignment="Left"  Width="200" Content="Ringtone" Height="80" Click="RingtoneButton_Click" Margin="0,0,0,0"></Button>
+                    </StackPanel>
+
+                    
+                    <!--<TextBlock Height="60" 
+                                   Margin="10,5,0,0" Foreground="{StaticResource PhoneAccentBrush}" Name="DownloadSubmittedTextBlock" Visibility="Collapsed" > 
+                            Download submitted.<LineBreak/>Check progress on main page
+                    </TextBlock >
+                    <TextBlock Height="60" Tap="StreamingSubmittedTextBlock_Tap"
+                                   Margin="10,5,0,0" Foreground="{StaticResource PhoneAccentBrush}" Name="StreamingSubmittedTextBlock" Visibility="Collapsed" > 
+                            Streaming submitted.<LineBreak/>Tap here go to streaming page
+                    </TextBlock >-->
+                </StackPanel>
+            </StackPanel>
+         
+        </Grid>
+
+        
+       
+            
+       
+
+
+                
+        <adduplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Visible" Grid.Row="1"
+                                AppId="{StaticResource AdDuplexId}" />
+
+
+        <!--<ProgressBar Width="400" VerticalAlignment="Top" HorizontalAlignment="Left" Name="MainProgressBar" Foreground="{StaticResource PhoneAccentBrush}" 
+                     Visibility="Collapsed" IsIndeterminate="False"></ProgressBar>-->
+        <TextBlock Width="500"  VerticalAlignment="Top" HorizontalAlignment="Left" 
+                   Margin="24,-5,0,0"
+                   Name="RefreshTextBlock" Visibility="Collapsed" Text="Connection failed. Tap to refresh"
+                     Foreground="{StaticResource PhoneAccentBrush}" Tap="RefreshTextBlock_Tap" ></TextBlock >
+        <phone:WebBrowser HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="0" Height="0"
+                          Name="MainWebBrowser"/>
+        
+    </Grid>
+
+
+</phone:PhoneApplicationPage>

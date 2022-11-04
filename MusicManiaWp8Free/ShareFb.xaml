@@ -1,0 +1,49 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="MusicManiaWp7.ShareFb"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:adDuplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" >
+        <Grid.Background>
+            <ImageBrush ImageSource="b3.jpg" />
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="{StaticResource AppName}" Style="{StaticResource PhoneTextNormalStyle}" Foreground="{StaticResource PhoneAccentBrush}"/>
+            <TextBlock Text="Share" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <StackPanel>
+                <TextBlock Text="Help us , share this app and get free acces to:" Style="{StaticResource PhoneTextTitle2Style}" TextWrapping="Wrap" Margin="12,0,24,24"></TextBlock>
+                <TextBlock Text="- Export to Music Hub" Style="{StaticResource PhoneTextTitle2Style}"></TextBlock>
+                <TextBlock Text="- Free ads" Style="{StaticResource PhoneTextTitle2Style}"></TextBlock>
+                <Button Content ="Share" Name="MainButton" Margin="0,24,0,0" Width="120" HorizontalAlignment="Left"> </Button>
+    
+            </StackPanel>
+        </Grid>
+
+        <adDuplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Collapsed" 
+                                AppId="{StaticResource AdDuplexId}" Grid.Row="2"/>
+    </Grid>
+
+</phone:PhoneApplicationPage>

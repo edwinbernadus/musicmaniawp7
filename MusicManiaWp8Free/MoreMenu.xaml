@@ -1,0 +1,171 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="MusicManiaWp7.MoreMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Controls="clr-namespace:WP7Contrib.View.Controls;assembly=WP7Contrib.View.Controls"
+    xmlns:adDuplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" >
+        <Grid.Background>
+            <ImageBrush ImageSource="b3.jpg" />
+        </Grid.Background>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="{StaticResource AppName}" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <!--<TextBlock Text="Full Menu" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>-->
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ListBox Margin="10,0,-12,0" Controls:TiltEffect.IsTiltEnabled="True">
+                <ListBox.Resources>
+                    <Style x:Key="Text1Style" TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}" />
+                        <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}" />
+                        <Setter Property="Margin" Value="10,0,0,0" />
+                    </Style>
+                    <Style x:Key="Button1Style" TargetType="Image">
+                        <Setter Property="Width" Value="50" />
+                        <Setter Property="Height" Value="50" />
+                        <Setter Property="Margin" Value="10,10,10,10" />
+                    </Style>
+                </ListBox.Resources>
+
+
+                <ListBoxItem Tap="SearchTap" Margin="0,0,0,30">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/search.png" Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Search" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+                <ListBoxItem Tap="RingToneTap" Margin="0,0,0,30">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/appbar.music.select.png"
+                                           Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Ringtones" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+
+                <ListBoxItem Margin="0,0,0,30" Tap="DatabaseListItemTap" >
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/appbar.database.png"
+                                           Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock
+                                    Text="Database"
+                                    TextWrapping="Wrap" Foreground="White"
+                                    Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+
+                <ListBoxItem Tap="LocalListTap" Margin="0,0,0,30">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/appbar.list.png"
+                                           Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock
+                                    Text="Local Catalog"
+                                    TextWrapping="Wrap" Foreground="White"
+                                    Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+                <ListBoxItem Margin="0,0,0,30" Name="RatingListBoxItem" Visibility="Collapsed"
+                                     Tap="RatingMarketTap">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/favs.png" Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Rate Us" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+
+                <ListBoxItem Name="BuyListBoxItem" Visibility="Collapsed" Margin="0,0,0,30" Tap="BuyMarketTap">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/marketplace.png"
+                                           Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Buy" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+                <ListBoxItem Tap="SettingTap" Margin="0,0,0,30">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/appbar.settings.png"
+                                           Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Settings" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Name="WifiSyncItem" Margin="0,0,0,30" Tap="WifiSyncTap">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/wifi.4.png" Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Wifi Sync" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Name="FreePromoItem" Margin="0,0,0,30"  Tap="ShareFbTap">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource PhoneAccentBrush}" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                            <Image Source="Image/no_circle/like.png" Style="{StaticResource Button1Style}" />
+                        </Border>
+                        <TextBlock Text="Free Promo" TextWrapping="Wrap" Foreground="White"
+                                           Style="{StaticResource Text1Style}" />
+                    </StackPanel>
+                </ListBoxItem>
+
+            </ListBox>
+        </Grid>
+        <adDuplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Collapsed" 
+                                AppId="{StaticResource AdDuplexId}" Grid.Row="2"/>
+
+    </Grid>
+
+</phone:PhoneApplicationPage>

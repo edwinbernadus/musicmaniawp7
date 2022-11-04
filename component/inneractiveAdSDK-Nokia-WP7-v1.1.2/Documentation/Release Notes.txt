@@ -1,0 +1,13 @@
+Release Notes
+=============
+
+InneractiveAdSDK-Nokia-WP7-v1.1.2
+- Release date: 2/12/2013
+- Supports WP 7.1 +
+- Add optional parameters for ad sizes supports. Banner's Required/Optional parameters are only relevant for C#.
+- Additional Ad alignment optional parameters.
+- Events are no longer static.
+- Events bug was resolved.  
+- Validation handling was added.
+- Improve the refresh ad handling.
+- Performance was improved.

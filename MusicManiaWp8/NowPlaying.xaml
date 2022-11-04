@@ -1,0 +1,121 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="MusicManiaWp7.NowPlaying"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True" 
+    xmlns:musicManiaWp7="clr-namespace:MusicManiaWp7"
+    xmlns:controls="clr-namespace:Phone.Controls;assembly=Phone.Controls"
+    xmlns:adDuplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
+    Loaded="PhoneApplicationPage_Loaded">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <Grid.Background>
+            <ImageBrush ImageSource="b3.jpg" />
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="SongTitle" Text=" " Style="{StaticResource PhoneTextNormalStyle}"/>
+            <!--<TextBlock x:Name="PageTitle" Text="Now Playing" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>-->
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0" HorizontalAlignment="Left" Name="PlayStack"
+                    Visibility="Visible">
+                <Border BorderBrush="White" BorderThickness="0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="Visible">
+                            <!--<Button Width="80" Height="80" Content="" Name="HideImage" BorderBrush="Transparent"
+                            Tap="hideButton_Click">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/minus.png" />
+                                </Button.Background>
+                            </Button>-->
+                            <Button Width="80" Height="80" Content="" Name="PrevButton" BorderBrush="Transparent"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/rew.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="PlayButton"
+                            Visibility="{Binding PlayImage,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/play.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="PauseButton"
+                            Visibility="{Binding PauseImage,Mode=TwoWay,Converter={StaticResource VisibilityConverter}}"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/pause.png" />
+                                </Button.Background>
+                            </Button>
+                            <Button Width="80" Height="80" Content="" BorderBrush="Transparent" Name="NextButton"
+                            >
+                                <Button.Background>
+                                    <ImageBrush ImageSource="Image/ff.png" />
+                                </Button.Background>
+                            </Button>
+
+                        </StackPanel>
+
+
+                        <!--<ProgressBar Width="300"  Value="50" Maximum="100" Background="White"  Margin="0,5,0,10" Height="3" 
+                                 Style="{StaticResource ProgressBarStyle1}" ></ProgressBar>-->
+                        <Slider Width="420"  Value="50" Maximum="100" Background="White"  Margin="0,-5,0,-10" Name="MainSlider" 
+                                Visibility="Collapsed" >
+                        </Slider>
+
+                        <ProgressBar Width="320"  Value="50" Maximum="100" 
+                                 Margin="0,-5,0,-10" Name="BackgroundLoadProgressBar" Visibility="Collapsed" IsIndeterminate="False" >
+                        </ProgressBar>
+
+                        <!--<Controls1:SuperSlider Width="300"  Value="50" Maximum="100" Background="White"  Margin="0,15,0,-5" Height="10">
+                            </Controls1:SuperSlider>-->
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <!--<RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />-->
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="12,-36,0,0">
+            <TextBlock  Style="{StaticResource PhoneTextTitle3Style}" TextWrapping="Wrap"  Margin="0,0,0,18" FontSize="18"
+                                            Foreground="{StaticResource PhoneAccentBrush}" Name="RingToneTextBlock" Visibility="Collapsed"
+
+                                            Text="Download Ringtone"  Tap="RingToneTap"/>
+            <controls:ScrollableTextBlock  Text=" "           
+                Name="scrollableTextBlock1" Height="400" Width="400" 
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           FontSize="{StaticResource PhoneFontSizeMedium}"
+                  />
+            <ProgressBar Name="MainProgressBar" Width="400" VerticalAlignment="Top"
+                         Margin="12,0,0,0" Visibility="Collapsed" IsIndeterminate="False"></ProgressBar>
+            </StackPanel>
+        </Grid>
+        <adDuplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Collapsed" 
+                                AppId="{StaticResource AdDuplexId}" Grid.Row="2"/>
+    </Grid>
+</phone:PhoneApplicationPage>

@@ -1,0 +1,374 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
+using Microsoft.Phone.BackgroundAudio;
+using Model;
+using SharedLogicNoAsync;
+
+namespace AudioPlaybackAgent
+{
+    public class AudioPlayer : AudioPlayerAgent
+    {
+        
+        private static volatile bool _classInitialized;
+
+        // What's the current track?
+        //static int currentTrackNumber = 0;
+
+
+        
+
+        //// A playlist made up of AudioTrack items.
+        //private static List<AudioTrack> _playList = new List<AudioTrack>
+        //{
+           
+        //};
+
+        private static List<AudioTrack> GenerateTrackDownloadList()
+        {
+            var t = PersistantManagerNoAsync.Load();
+            var t2 = t.ToList();
+
+            var output = t2.Select(x => new AudioTrack(
+                new Uri(System.Net.HttpUtility.UrlEncode(x.DownloadFileNameWithPath), UriKind.Relative),
+                x.SearchSongName, x.Artist, "", null)).ToList();
+            return output;
+        }
+
+        private static List<AudioTrack> GenerateTrackStreamingList()
+        {
+
+            var t = StreamingManagerNoAsync.Load();
+            var t2 = t.ToList();
+
+            var output = t2.Select(x => new AudioTrack(
+                new Uri(x.DownloadUrl, UriKind.RelativeOrAbsolute),
+                x.SearchSongName, x.Artist, "", null)).ToList();
+            return output;
+        }
+
+
+        private static List<AudioTrack> GenerateTrackPlayListDetail(string playListName)
+        {
+
+            var t = PlaylistManagerNoAsync.Load(playListName);
+            var t2 = t.ToList();
+
+            var output = t2.Select(x => new AudioTrack(
+                new Uri(x.PlayListUrl, UriKind.RelativeOrAbsolute),
+                x.SearchSongName, x.Artist, "", null,x.GuidString,EnabledPlayerControls.All)).ToList();
+            return output;
+        }
+
+
+        /// <remarks>
+        /// AudioPlayer instances can share the same process. 
+        /// Static fields can be used to share state between AudioPlayer instances
+        /// or to communicate with the Audio Streaming agent.
+        /// </remarks>
+        public AudioPlayer()
+        {
+            if (!_classInitialized)
+            {
+                _classInitialized = true;
+                // Subscribe to the managed exception handler
+                Deployment.Current.Dispatcher.BeginInvoke(delegate
+                {
+                    Application.Current.UnhandledException += AudioPlayer_UnhandledException;
+                });
+            }
+        }
+
+        /// Code to execute on Unhandled Exceptions
+        private void AudioPlayer_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        {
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // An unhandled exception has occurred; break into the debugger
+                System.Diagnostics.Debugger.Break();
+            }
+        }
+
+
+        private List<AudioTrack>  GenerateTrackCaller(AudioState backgroundAudioController)
+        {
+            List<AudioTrack> _playList;
+            //var backgroundAudioController = AudioStateManagerNoAsync.Load();
+            if (backgroundAudioController.BackgroundType ==
+                AudioState.PlaylistEnum.Download.ToString())
+            {
+                _playList = GenerateTrackDownloadList();
+            }
+            else if (backgroundAudioController.BackgroundType ==
+                AudioState.PlaylistEnum.Streaming.ToString())
+            {
+                _playList = GenerateTrackStreamingList();
+            }
+            else
+            {
+                _playList = GenerateTrackPlayListDetail(backgroundAudioController.PlaylistName);
+            }
+            
+            return _playList;
+        }
+
+        /// <summary>
+        /// Increments the currentTrackNumber and plays the correpsonding track.
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        private void PlayNextTrack(BackgroundAudioPlayer player)
+        {
+            
+            var backgroundAudioController= AudioStateManagerNoAsync.Load();
+            List<AudioTrack> _playList = GenerateTrackCaller(backgroundAudioController);
+            
+            backgroundAudioController.AudioTrackNumber++;
+            if (backgroundAudioController.AudioTrackNumber >= _playList.Count)
+            {
+                backgroundAudioController.AudioTrackNumber = 0;
+            }
+
+            AudioStateManagerNoAsync.Save(backgroundAudioController);
+
+            PlayTrack(player);
+        }
+
+
+        /// <summary>
+        /// Decrements the currentTrackNumber and plays the correpsonding track.
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        private void PlayPreviousTrack(BackgroundAudioPlayer player)
+        {
+            var backgroundAudioController = AudioStateManagerNoAsync.Load();
+            List<AudioTrack> _playList = GenerateTrackCaller(backgroundAudioController);
+            
+            backgroundAudioController.AudioTrackNumber--;
+            if (backgroundAudioController.AudioTrackNumber < 0)
+            {
+                backgroundAudioController.AudioTrackNumber = _playList.Count - 1;
+            }
+
+            AudioStateManagerNoAsync.Save(backgroundAudioController);
+
+            PlayTrack(player);
+
+            
+        }
+
+
+        /// <summary>
+        /// Plays the track in our playlist at the currentTrackNumber position.
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        private void PlayTrack(BackgroundAudioPlayer player)
+        {
+            var backgroundAudioController = AudioStateManagerNoAsync.Load();
+            List<AudioTrack> _playList = GenerateTrackCaller(backgroundAudioController);
+
+            if (backgroundAudioController.AudioTrackNumber> _playList.Count)
+            {
+                backgroundAudioController.AudioTrackNumber = 0;
+                AudioStateManagerNoAsync.Save(backgroundAudioController);
+            }
+
+
+            bool alreadyPlayed = false;
+            if (player.Track != null)
+            {
+                if (player.Track.Source != null)
+                {
+                    Debug.WriteLine("play track number: " + backgroundAudioController.AudioTrackNumber.ToString());
+                    if (_playList[backgroundAudioController.AudioTrackNumber].Source == player.Track.Source)
+                    {
+                        if (PlayState.Paused == player.PlayerState)
+                        {
+                            alreadyPlayed = true;
+                            player.Play();
+                        }
+
+                    }
+                }
+            }
+            
+            if (!alreadyPlayed)
+            {
+                try
+                {
+                    if (_playList.Any())
+                    {
+                        player.Track = _playList[backgroundAudioController.AudioTrackNumber];
+                        //if (backgroundAudioController.BackgroundType ==
+                        //                           AudioState.PlaylistEnum.Playlist.ToString())
+                        //{
+                        //    var guid = backgroundAudioController.GuidString;
+                        //    player.Track.Tag = guid;
+                        //}
+                    }
+                }
+                catch (Exception exception)
+                {
+
+                }
+                
+            }
+
+            
+            //if (PlayState.Paused == player.PlayerState)
+            //{
+                
+            //    // If we're paused, we already have 
+            //    // the track set, so just resume playing.
+            //    player.Play();
+            //}
+            //else
+            //{
+            //    // Set which track to play. When the TrackReady state is received 
+            //    // in the OnPlayStateChanged handler, call player.Play().
+
+            //    var _playList = await GenerateTrackListAsync();
+
+            //    var current = await CurrentTrackMusic.LoadAsync();
+
+            //    if (current> _playList.Count)
+            //    {
+            //        current = 0;
+            //        await CurrentTrackMusic.SaveAsync(current);
+            //    }
+            //    player.Track = _playList[current];
+            //}
+
+        }
+
+
+        /// <summary>
+        /// Called when the playstate changes, except for the Error state (see OnError)
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        /// <param name="track">The track playing at the time the playstate changed</param>
+        /// <param name="playState">The new playstate of the player</param>
+        /// <remarks>
+        /// Play State changes cannot be cancelled. They are raised even if the application
+        /// caused the state change itself, assuming the application has opted-in to the callback.
+        /// 
+        /// Notable playstate events: 
+        /// (a) TrackEnded: invoked when the player has no current track. The agent can set the next track.
+        /// (b) TrackReady: an audio track has been set and it is now ready for playack.
+        /// 
+        /// Call NotifyComplete() only once, after the agent request has been completed, including async callbacks.
+        /// </remarks>
+        protected override void OnPlayStateChanged(BackgroundAudioPlayer player, AudioTrack track, PlayState playState)
+        {
+            switch (playState)
+            {
+                case PlayState.TrackEnded:
+                    PlayNextTrack(player);
+                    break;
+
+                case PlayState.TrackReady:
+                    // The track to play is set in the PlayTrack method.
+                    player.Play();
+                    break;
+            }
+
+            NotifyComplete();
+        }
+
+
+        /// <summary>
+        /// Called when the user requests an action using application/system provided UI
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        /// <param name="track">The track playing at the time of the user action</param>
+        /// <param name="action">The action the user has requested</param>
+        /// <param name="param">The data associated with the requested action.
+        /// In the current version this parameter is only for use with the Seek action,
+        /// to indicate the requested position of an audio track</param>
+        /// <remarks>
+        /// User actions do not automatically make any changes in system state; the agent is responsible
+        /// for carrying out the user actions if they are supported.
+        /// 
+        /// Call NotifyComplete() only once, after the agent request has been completed, including async callbacks.
+        /// </remarks>
+        protected override void OnUserAction(BackgroundAudioPlayer player, AudioTrack track, UserAction action, object param)
+        {
+            var o = param;
+            switch (action)
+            
+            {
+                case UserAction.Seek:
+                    var timeSpan = (TimeSpan)param;
+                    //var position = timeSpan.Seconds;
+                    
+                    player.Position = timeSpan;
+                    //currentTrackNumber = position;
+                    //PlayTrack(player);
+                    break;
+                case UserAction.Play:
+                    PlayTrack(player);
+                    break;
+
+                case UserAction.Pause:
+                    
+                        player.Pause();
+                    
+                    
+                    break;
+
+                case UserAction.SkipPrevious:
+                    PlayPreviousTrack(player);
+                    break;
+
+                case UserAction.SkipNext:
+                    PlayNextTrack(player);
+                    break;
+            }
+
+            NotifyComplete();
+        }
+
+
+        /// <summary>
+        /// Called whenever there is an error with playback, such as an AudioTrack not downloading correctly
+        /// </summary>
+        /// <param name="player">The BackgroundAudioPlayer</param>
+        /// <param name="track">The track that had the error</param>
+        /// <param name="error">The error that occured</param>
+        /// <param name="isFatal">If true, playback cannot continue and playback of the track will stop</param>
+        /// <remarks>
+        /// This method is not guaranteed to be called in all cases. For example, if the background agent 
+        /// itself has an unhandled exception, it won't get called back to handle its own errors.
+        /// </remarks>
+        protected override void OnError(BackgroundAudioPlayer player, AudioTrack track, Exception error, bool isFatal)
+        {
+            if (isFatal)
+            {
+
+                Abort();
+            }
+            else
+            {
+
+                // force the track to stop 
+                player.Track = null;
+                NotifyComplete();
+            }            
+
+        }
+
+        /// <summary>
+        /// Called when the agent request is getting cancelled
+        /// </summary>
+        /// <remarks>
+        /// Once the request is Cancelled, the agent gets 5 seconds to finish its work,
+        /// by calling NotifyComplete()/Abort().
+        /// </remarks>
+        protected override void OnCancel()
+        {
+
+        }
+    }
+
+}

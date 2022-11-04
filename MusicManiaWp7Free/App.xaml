@@ -1,0 +1,27 @@
+﻿<Application 
+    x:Class="MusicManiaWp7.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:helpers="clr-namespace:MusicManiaWp7">
+
+    <!--Application Resources-->
+    <Application.Resources>
+        <helpers:VisibilityConverter x:Key="VisibilityConverter"></helpers:VisibilityConverter>
+        <SolidColorBrush Color="#333333" x:Key="SecondAccentColor"/>
+        
+        <sys:String x:Key="AppName">MP3 Downloader</sys:String>
+        <sys:String x:Key="AdDuplexId">42263</sys:String>
+        <sys:String x:Key="InteractiveCode">orangefloat_Mp3downloader_WP</sys:String>
+        
+    </Application.Resources>
+
+    <Application.ApplicationLifetimeObjects>
+        <!--Required object that handles lifetime events for the application-->
+        <shell:PhoneApplicationService 
+            Launching="Application_Launching" Closing="Application_Closing" 
+            Activated="Application_Activated" Deactivated="Application_Deactivated"/>
+    </Application.ApplicationLifetimeObjects>
+
+</Application>

@@ -1,0 +1,159 @@
+﻿<phone:PhoneApplicationPage x:Class="MusicManiaWp7.PlayListEdit"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="480"
+                            d:DesignHeight="768" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}" Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="Portrait" Orientation="Portrait"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:adduplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone" shell:SystemTray.IsVisible="True"
+                            Loaded="PhoneApplicationPage_Loaded">
+
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Image/no_circle/appbar.save.rest.png" Text="Save"
+                                            Click="UpdateApplicationBarMenuItem_Click" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="edit order" Click="EditOrderApplicationBarMenuItem_Click" />
+                <shell:ApplicationBarMenuItem Text="import from all list" Click="CopyAllApplicationBarMenuItem_Click" />
+                <shell:ApplicationBarMenuItem Text="clear all" Click="ClearAllApplicationBarMenuItem_Click" />
+                <!--<shell:ApplicationBarMenuItem Text="remove deleted songs" Click="CopyAllApplicationBarMenuItem_Click"   />-->
+                <!--<shell:ApplicationBarMenuItem Text="update" Click="UpdateApplicationBarMenuItem_Click"   />-->
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+    
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Pivot Control-->
+        <controls:Pivot Title=" " Name="MainPivot">
+            <!--Pivot item one-->
+            <controls:PivotItem Header="Playlist">
+                <Grid>
+                    <TextBlock Name="InfoTextBlock" Visibility="Visible" Margin="16,0,0,20"
+                               Text="Pick a song from all section" Foreground="{StaticResource PhoneAccentBrush}">
+                    </TextBlock>
+
+                    <ListBox Margin="16,0,0,20" ItemsSource="{Binding Items}" Name="ListBoxEdit"
+                             SelectionChanged="ListBoxEdit_SelectionChanged">
+                        <ListBox.Resources>
+                            <Style x:Key="Text1Style" TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}" />
+                                <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}" />
+                                <Setter Property="Margin" Value="10,0,0,0" />
+                            </Style>
+
+                        </ListBox.Resources>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                        <Border Background="{StaticResource PhoneAccentBrush}" Width="50" Height="50">
+                                            <Button Width="50" Height="50" Content="" BorderBrush="Transparent"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" Tag="{Binding GuidString}" Tap="DeleteButton_Tap">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="Image\no_circle\appbar.minus.png" />
+                                                </Button.Background>
+                                            </Button>
+                                        </Border>
+
+
+                                        <TextBlock Text="{Binding SongName}" TextWrapping="Wrap" Foreground="White"
+                                                   VerticalAlignment="Center" Style="{StaticResource Text1Style}" Margin="20,-4,0,0" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </controls:PivotItem>
+
+            <!--Pivot item two-->
+            <controls:PivotItem Header="All">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="70"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Name="InfoTextBlock2" Visibility="Visible" Margin="16,0,0,20"
+                               Text="No data - try download something" Foreground="{StaticResource PhoneAccentBrush}">
+                    </TextBlock>
+
+                    
+                        <Grid Name="SearchGrid" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="60"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Height="80" IsEnabled="False" Name="SearchTextBlock" KeyDown="SearchTextBlock_KeyDown"
+                                     TextChanged="SearchTextBlock_TextChanged" LostFocus="SearchTextBlock_LostFocus" GotFocus="SearchTextBlock_GotFocus" />
+                            <Border Grid.Column="1" Height="40" Margin="-5,0,0,0">
+
+                                <Image Source="Image/cancel.png" Tap="ClearImageTap"></Image>
+                            </Border>
+                        </Grid>
+
+
+                        <ListBox Margin="16,0,0,20" ItemsSource="{Binding Items}" Name="ListBoxAll" Grid.Row="1"
+                                 SelectionChanged="ListBoxAll_SelectionChanged">
+                            <ListBox.Resources>
+
+                                <Style x:Key="Text1Style" TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}" />
+                                    <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}" />
+                                    <Setter Property="Margin" Value="10,0,0,0" />
+                                </Style>
+                            </ListBox.Resources>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                            <Border Background="{StaticResource PhoneAccentBrush}" Width="50" Height="50">
+                                                <Button Width="50" Height="50" Content="" BorderBrush="Transparent"
+                                                        HorizontalAlignment="Center" VerticalAlignment="Center" Tag="{Binding FileUrl}" Tap="AddButton_Tap">
+                                                    <Button.Background>
+                                                        <ImageBrush ImageSource="Image\no_circle\appbar.add.png" />
+                                                    </Button.Background>
+                                                </Button>
+                                            </Border>
+
+
+                                            <TextBlock Text="{Binding SongName}" TextWrapping="Wrap" Foreground="White"
+                                                       VerticalAlignment="Center" Style="{StaticResource Text1Style}" Margin="20,-4,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    
+                    <TextBlock Grid.Row="2" Name="DisplayTextBlock" Margin="16,0,0,0"
+                               Foreground="{StaticResource PhoneAccentBrush}"></TextBlock>
+                </Grid>
+
+            </controls:PivotItem>
+        </controls:Pivot>
+
+        <adduplex:AdControl x:Name="adDuplexAd" VerticalAlignment="Bottom" Visibility="Visible" Grid.Row="2"
+                            AppId="{StaticResource AdDuplexId}" />
+    </Grid>
+
+</phone:PhoneApplicationPage>
